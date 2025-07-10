@@ -1,42 +1,265 @@
+/* front-end-inscricoes/src/App.css - Estilos Consolidados */
+
+/* Reset Básico para consistência entre navegadores */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f8f8; /* Fundo padrão para a aplicação */
+  color: #333; /* Cor de texto padrão */
+  min-height: 100vh; /* Garante que o body ocupa a altura total da viewport */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Estilo do #root (Vite default, mantém o texto centralizado se necessário) */
 #root {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  text-align: center;
+  min-height: 100vh; /* Garante que o root também ocupe a tela toda */
+  display: flex; /* Adiciona flex para o App.tsx controlar o layout */
+  flex-direction: column;
+}
+
+/* Estilos para o App.tsx (container global de layouts) */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Garante que o layout ocupe a altura total */
+}
+
+/* Estilos da Barra de Navegação (usado em AdminLayout e ClientLayout) */
+.navbar {
+  background-color: #FEFEFE; /* Branco suave */
+  color: #404040; /* Cinza escuro para o texto */
+  box-shadow: 5px 5px 13px #eaeaea, -5px -5px 13px #ffffff; /* Efeito neumorphism suave */
+  padding: 1rem 2rem; /* Mais padding nas laterais */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0; /* Impede que o navbar encolha */
+}
+
+.navbar-title a {
+  color: #404040;
+  text-decoration: none;
+  font-size: 1.5rem; /* Ajustado para um tamanho de título */
+  font-weight: bold;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 1.5rem; /* Espaçamento entre os links */
+}
+
+.nav-link {
+  color: #404040;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: text-decoration 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+/* Estilos do Conteúdo Principal (usado em AdminLayout e ClientLayout) */
+.main-content {
+  flex: 1; /* Ocupa o espaço restante */
+  padding: 2rem; /* Padding maior para o conteúdo das páginas */
+}
+
+/* Estilos do Rodapé (usado em AdminLayout e ClientLayout) */
+.footer {
+  background-color: #FEFEFE; /* Branco suave */
+  color: #404040; /* Cinza escuro para o texto */
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  box-shadow: 5px 5px 13px #eaeaea, -5px -5px 13px #ffffff; /* Efeito neumorphism suave */
+  flex-shrink: 0; /* Impede que o footer encolha */
+}
+
+/* Estilos Comuns para Formulários/Cards */
+.card-container {
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: white;
+}
+
+/* Estilos de Títulos das Páginas Internas */
+.page-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #333;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Estilos de Formulários */
+.form-group {
+  margin-bottom: 1rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.form-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+  color: #4a5568;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.form-input {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  box-sizing: border-box;
 }
 
-.card {
-  padding: 2em;
+.form-input:focus {
+  outline: none;
+  border-color: #3182CE;
+  box-shadow: 0 0 0 1px rgba(49, 130, 206, 0.6);
 }
 
-.read-the-docs {
-  color: #888;
+.form-input[readonly] {
+  background-color: #edf2f7;
+  cursor: not-allowed;
+}
+
+.form-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+.form-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Estilos de Mensagens (Sucesso, Erro, Aviso) */
+.message-box {
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.message-success {
+  background-color: #d4edda;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+.message-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+.message-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border-color: #ffeeba;
+}
+
+/* --- ESTILOS ESPECÍFICOS DA HOME PAGE (Portal de Entrada) --- */
+.home-portal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+  padding: 20px;
+  background-color: #f0f2f5; /* Um fundo suave para a página de portal */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.home-logo-placeholder {
+  width: 120px;
+  height: 120px;
+  background-color: #319795; /* Cor de exemplo para o logo */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 32px auto;
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.home-title {
+  font-size: 3.5rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.home-title-highlight {
+  color: #3182CE; /* Azul para o destaque */
+}
+
+.home-subtitle {
+  font-size: 1.2rem;
+  color: #666;
+  max-width: 600px;
+  margin-bottom: 40px;
+  line-height: 1.5;
+}
+
+.home-buttons-container {
+  display: flex;
+  gap: 20px;
+}
+
+.home-button {
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  font-weight: 600;
+  text-decoration: none; /* Para links */
+  display: inline-flex; /* Para links, para que padding funcione como botão */
+  align-items: center;
+  justify-content: center;
+}
+
+.home-button.primary {
+  background-color: #3182CE;
+  color: white;
+}
+
+.home-button.primary:hover {
+  background-color: #2B6CB0;
+}
+
+.home-button.secondary {
+  background-color: transparent;
+  color: #3182CE;
+  border: 2px solid #3182CE;
+}
+
+.home-button.secondary:hover {
+  background-color: #3182CE;
+  color: white;
 }
