@@ -3,6 +3,7 @@ import Home from './pages/Home';
 
 import AdminLayout from './layouts/AdminLayout';
 import ClientLayout from './layouts/ClientLayout';
+import AdminLogin from './pages/AdminLogin';
 
 import './App.css';
 
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/admin/*" element={<AdminLayout />} />
         <Route path="/cliente/*" element={<ClientLayout />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
       </Routes>
     </Router>
   );

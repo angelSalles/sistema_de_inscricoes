@@ -24,7 +24,7 @@ function Home() {
       {/* Botões de Ação para as áreas */}
       <div className="home-buttons-container">
         {/* Link para a Área Administrativa */}
-        <ReactRouterLink to="/admin" className="home-button primary">
+        <ReactRouterLink to="/admin-login" className="home-button primary">
           Área Administrativa
         </ReactRouterLink>
 

@@ -10,12 +10,14 @@ const inscricoesRoutes = require('./routes/inscricoes');
 const cepRoutes = require('./routes/cep');
 const gpt = require('./routes/gtp');
 const avaliacoesRoutes = require('./routes/avaliacoes');
+const perfisRoutes = require('./routes/perfis');
 
 const app = express();
 const PORT = process.env.PORT || 3001; // Porta para o seu backend. O frontend geralmente roda em 5173 ou 3000
 
 const corsOptions = {
   origin: 'http://localhost', // Permite requisições APENAS desta origem do frontend
+  //origin: 'http://localhost:5173', // Permite requisições APENAS desta origem do frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
   allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos (útil para futuras autenticações)
 };
@@ -55,6 +57,7 @@ app.use('/inscricoes', inscricoesRoutes(db));
 app.use('/cep', cepRoutes());
 app.use('/gpt', gpt());
 app.use('/avaliacoes', avaliacoesRoutes(db));
+app.use('/perfis', perfisRoutes(db));
 
 // Iniciar o servidor
 app.listen(PORT, () => {

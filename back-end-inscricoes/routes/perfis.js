@@ -18,11 +18,19 @@ module.exports = (db) => {
       const snapshot = await perfisRef.get();
       const perfis = [];
       snapshot.forEach(doc => {
-        perfis.push({ id: doc.id, ...doc.data() });
+        // Retorna apenas os campos desejados, ignorando descricao e permissoes se existirem em docs antigos
+        const data = doc.data();
+        perfis.push({
+          id: doc.id,
+          nomePerfil: data.nomePerfil,
+          email: data.email,
+          senha: data.senha, // Atenção: em produção, nunca retorne a senha assim!
+          dataCriacao: data.dataCriacao && typeof data.dataCriacao.toDate === 'function' ? data.dataCriacao.toDate().toISOString() : null
+        });
       });
       res.status(200).json(perfis);
     } catch (error) {
-      console.error('Erro ao buscar perfis:', error);
+      console.error('Erro ao buscar perfis (GET /):', error);
       res.status(500).json({ error: 'Erro ao buscar perfis.' });
     }
   });
@@ -37,9 +45,19 @@ module.exports = (db) => {
         return res.status(404).json({ error: 'Perfil não encontrado.' });
       }
 
-      res.status(200).json({ id: perfilDoc.id, ...perfilDoc.data() });
+      const data = perfilDoc.data();
+      // Retorna apenas os campos desejados, ignorando descricao e permissoes
+      const formattedPerfil = {
+        id: perfilDoc.id,
+        nomePerfil: data.nomePerfil,
+        email: data.email,
+        senha: data.senha, // Atenção: em produção, nunca retorne a senha assim!
+        dataCriacao: data.dataCriacao && typeof data.dataCriacao.toDate === 'function' ? data.dataCriacao.toDate().toISOString() : null
+      };
+
+      res.status(200).json(formattedPerfil);
     } catch (error) {
-      console.error('Erro ao buscar perfil por ID:', error);
+      console.error('Erro ao buscar perfil por ID (GET /:id):', error);
       res.status(500).json({ error: 'Erro ao buscar perfil.' });
     }
   });
@@ -47,17 +65,22 @@ module.exports = (db) => {
   // POST create new perfil
   router.post('/', async (req, res) => {
     try {
-      const novoPerfil = req.body;
-      // Validação básica (email e senha agora são obrigatórios para um novo perfil de login)
-      if (!novoPerfil.nomePerfil || !novoPerfil.email || !novoPerfil.senha) {
+      const { nomePerfil, email, senha } = req.body; // Desestrutura apenas os campos desejados
+
+      if (!nomePerfil || !email || !senha) {
         return res.status(400).json({ error: 'Nome do perfil, email e senha são obrigatórios.' });
       }
 
-      novoPerfil.dataCriacao = new Date();
-      novoPerfil.permissoes = Array.isArray(novoPerfil.permissoes) ? novoPerfil.permissoes : [];
+      // Constrói o objeto a ser salvo com apenas os campos permitidos
+      const novoPerfilData = {
+        nomePerfil: nomePerfil,
+        email: email,
+        senha: senha, // ATENÇÃO: Em produção, hash da senha seria feito aqui antes de salvar!
+        dataCriacao: new Date()
+      };
 
-      const docRef = await db.collection('PERFIL_ADMIN').add(novoPerfil);
-      res.status(201).json({ message: 'Perfil cadastrado com sucesso!', id: docRef.id, ...novoPerfil });
+      const docRef = await db.collection('PERFIL_ADMIN').add(novoPerfilData); // Salva o objeto construído
+      res.status(201).json({ message: 'Perfil cadastrado com sucesso!', id: docRef.id, ...novoPerfilData });
 
     } catch (error) {
       console.error('Erro ao criar perfil (POST /):', error);
@@ -69,24 +92,28 @@ module.exports = (db) => {
   router.put('/:id', async (req, res) => {
     try {
       const perfilId = req.params.id;
-      const dadosAtualizados = req.body;
-      delete dadosAtualizados.dataCriacao; 
+      const { nomePerfil, email, senha } = req.body; // Desestrutura apenas os campos que podem ser atualizados
 
       const perfilRef = db.collection('PERFIL_ADMIN').doc(perfilId);
       const doc = await perfilRef.get();
       if (!doc.exists) {
-          console.warn('AVISO: Perfil não encontrado para atualização com ID:', perfilId);
-          return res.status(404).json({ error: 'Perfil não encontrado para atualização.' });
+        console.warn('AVISO: Perfil não encontrado para atualização com ID:', perfilId);
+        return res.status(404).json({ error: 'Perfil não encontrado para atualização.' });
       }
 
-      // Permissões ainda precisam ser um array
-      if (dadosAtualizados.permissoes && !Array.isArray(dadosAtualizados.permissoes)) {
-          dadosAtualizados.permissoes = [];
-      }
-      // Email e senha também podem ser atualizados
-      // ATENÇÃO: Em produção, senhas seriam tratadas com hashing aqui.
+      // Constrói o objeto de atualização com apenas os campos permitidos
+      const updates = {};
+      if (nomePerfil !== undefined) updates.nomePerfil = nomePerfil;
+      if (email !== undefined) updates.email = email;
+      // Senha só é atualizada se for fornecida (não vazia)
+      if (senha !== undefined && senha !== '') updates.senha = senha; // ATENÇÃO: Em produção, hash da senha aqui!
+      // dataCriacao não é atualizada
 
-      await perfilRef.update(dadosAtualizados);
+      if (Object.keys(updates).length === 0) {
+          return res.status(400).json({ message: 'Nenhum dado válido fornecido para atualização.' });
+      }
+
+      await perfilRef.update(updates); // Atualiza apenas os campos fornecidos
       res.status(200).json({ message: 'Perfil atualizado com sucesso.', id: perfilId });
 
     } catch (error) {

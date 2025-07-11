@@ -84,9 +84,7 @@ export interface Avaliacao {
 export interface PerfilAdmin {
   id: string; // ID gerado pelo Firebase
   nomePerfil: string;
-  descricao?: string; // Opcional
-  permissoes: string[]; // Array de strings, ex: ["clientes:visualizar", "atividades:gerenciar"]
-  email: string; // <--- NOVO: Email do usuário administrativo
-  senha: string; // <--- NOVO: Senha do usuário (ATENÇÃO: Apenas para simulação, não seguro para produção!)
+  email: string; 
+  senha: string; 
   dataCriacao: Date | string;
 }
