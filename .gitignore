@@ -1,3 +1,14 @@
 node_modules/
 .env
 inscricoes-56ada-firebase-adminsdk-fbsvc-4defd91165.json
+.env.local
+.env.*.local
+
+# Pastas de build do frontend
+front-end-inscricoes/dist/
+
+# Cache do Vite
+front-end-inscricoes/.vite/
+
+# Ignorar o arquivo de credenciais do Firebase
+back-end-inscricoes/[SEU_ARQUIVO_DE_CREDENCIAIS].json # <-- Atualize com o nome real

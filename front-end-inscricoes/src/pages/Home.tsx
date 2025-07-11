@@ -1,5 +1,4 @@
 // front-end-inscricoes/src/pages/Home.tsx
-import React from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import logoSesc from '../assets/logo-sesc.jpeg';
 

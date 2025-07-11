@@ -1,6 +1,6 @@
 // front-end-inscricoes/src/pages/AdminAtividades.tsx
-import React, { useState, useEffect  } from 'react';
-import type { Atividade, Responsavel } from '../types/index.d'; // Importar Atividade e Responsavel (para o dropdown)
+import  { useState, useEffect  } from 'react';
+import type { Atividade, Responsavel } from '../types/index.d'; 
 import type { ChangeEvent, FormEvent } from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';   
 

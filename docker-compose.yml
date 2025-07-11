@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./back-end-inscricoes # Caminho para o Dockerfile do backend
+    container_name: sesc-backend
+    ports:
+      - "3001:3001" # Mapeia a porta 3001 do host para a porta 3001 do contêiner
+    volumes:
+      # Mapeia a pasta do código para o contêiner para desenvolvimento (opcional, pode ser removido para produção)
+      - ./back-end-inscricoes:/app
+      # Mapeia o .env para que o contêiner possa lê-lo
+      - ./back-end-inscricoes/.env:/app/.env
+      # Mapeia o arquivo de credenciais do Firebase para o contêiner
+      - ./back-end-inscricoes/inscricoes-56ada-firebase-adminsdk-fbsvc-4defd91165.json:/app/inscricoes-56ada-firebase-adminsdk-fbsvc-4defd91165.json
+
+    environment:
+      # Certifique-se que o caminho no .env aponta para o caminho dentro do contêiner
+      FIREBASE_SERVICE_ACCOUNT_PATH: /app/inscricoes-56ada-firebase-adminsdk-fbsvc-4defd91165.json # <--- ATUALIZE AQUI
+      # Outras variáveis de ambiente, se necessário
+    depends_on:
+      # Nenhuma dependência forte aqui, o frontend pode tentar se conectar mesmo que o backend demore
+      # services podem ser iniciados em paralelo
+      - frontend # Apenas para garantir que o frontend também seja iniciado pelo compose
+
+  frontend:
+    build: ./front-end-inscricoes # Caminho para o Dockerfile do frontend
+    container_name: sesc-frontend
+    ports:
+      - "80:80" # Mapeia a porta 80 do host para a porta 80 do contêiner (Nginx)
+    volumes:
+      # Mapeia o .env do frontend para o contêiner (para VITE_API_BASE_URL)
+      # Note que este .env é lido na fase de BUILD do Dockerfile do frontend.
+      # Se você precisa que VITE_API_BASE_URL seja dinâmico em tempo de execução
+      # (e não em tempo de build), você precisaria de uma abordagem mais avançada (ex: variáveis de ambiente do Nginx ou volume para dist/index.html)
+      # Para este setup, a VITE_API_BASE_URL é embutida no build do React.
+      - ./front-end-inscricoes/.env:/app/.env # Necessário se o .env for lido durante o build para injetar a VITE_API_BASE_URL

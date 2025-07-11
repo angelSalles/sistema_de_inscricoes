@@ -1,5 +1,5 @@
 // front-end-inscricoes/src/pages/AdminResponsaveis.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import type { Responsavel } from '../types/index.d'; // Importar a interface Responsavel
 

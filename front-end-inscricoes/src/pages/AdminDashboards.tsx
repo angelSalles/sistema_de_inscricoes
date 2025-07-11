@@ -1,5 +1,5 @@
 // front-end-inscricoes/src/pages/AdminDashboards.tsx
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { ChangeEvent, FormEvent} from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';

@@ -1,5 +1,5 @@
 // front-end-inscricoes/src/pages/ClientAvaliacoes.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { ChangeEvent, FormEvent  } from 'react';
 import type { Cliente, Atividade, Avaliacao } from '../types/index.d'; // Importar interfaces
 

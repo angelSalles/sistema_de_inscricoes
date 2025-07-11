@@ -1,11 +1,8 @@
-// front-end-inscricoes/src/layouts/AdminLayout.tsx
-import React from 'react';
-import { Outlet, Link as ReactRouterLink, Routes, Route } from 'react-router-dom';
+import { Link as ReactRouterLink, Routes, Route } from 'react-router-dom';
 import '../App.css';
 
-// Importar páginas administrativas
 import AdminAtividades from '../pages/AdminAtividades';
-import AdminAvaliacoes from '../pages/AdminAvaliacoes'; // <--- Importe este componente
+import AdminAvaliacoes from '../pages/AdminAvaliacoes'; 
 import AdminDashboards from '../pages/AdminDashboards';
 import AdminGerenciarInscricoes from '../pages/AdminGerenciarInscricoes';
 import AdminListarClientes from '../pages/AdminListarClientes';
@@ -34,7 +31,6 @@ function AdminLayout() {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<p>Bem-vindo à Área Administrativa! Por favor, selecione uma opção no menu acima.</p>} />
-          {/* Rotas aninhadas para a área administrativa */}
           <Route path="listar-clientes" element={<AdminListarClientes />} />
           <Route path="atividades" element={<AdminAtividades />} />
           <Route path="responsaveis" element={<AdminResponsaveis />} />

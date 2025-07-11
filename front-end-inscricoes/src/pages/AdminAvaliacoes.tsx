@@ -1,12 +1,9 @@
 // front-end-inscricoes/src/pages/AdminAvaliacoes.tsx
 import React, { useState, useEffect} from 'react';
-import type { FormEvent, ChangeEvent } from 'react';
 import type { Avaliacao, Cliente, Atividade } from '../types/index.d'; // Importe as interfaces necessárias
 
 function AdminAvaliacoes() {
   const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
-  const [clientes, setClientes] = useState<Cliente[]>([]); // Para join do nome do cliente
-  const [atividades, setAtividades] = useState<Atividade[]>([]); // Para join do nome da atividade
   
   const [isLoading, setIsLoading] = useState<boolean>(true); // Para carregar todas as avaliações e dados
   const [error, setError] = useState<string | null>(null);
@@ -38,13 +35,9 @@ function AdminAvaliacoes() {
       const atividadesData: Atividade[] = await atividadesRes.json();
       const avaliacoesData: Avaliacao[] = await avaliacoesRes.json(); // Dados brutos de avaliação
 
-      setClientes(clientesData);
-      setAtividades(atividadesData);
-
       // Realiza o "join" no frontend para adicionar nomes de cliente e atividade
       const avaliacoesComDetalhes = avaliacoesData.map(avaliacao => {
         const cliente = clientesData.find(c => c.id === avaliacao.idCliente);
-        // CORRIGIDO: Usar 'atividadesData' corretamente para encontrar a atividade.
         // A condição avaliacao.idAtividade verifica se a avaliação está ligada a uma atividade.
         const atividade = avaliacao.idAtividade ? atividadesData.find(a => a.id === avaliacao.idAtividade) : undefined;
         return {
@@ -77,7 +70,6 @@ function AdminAvaliacoes() {
 
     try {
       // Constrói a pergunta para a IA, incluindo o contexto da avaliação
-      // Incluímos o nome do cliente e da atividade para dar mais contexto à IA
       const perguntaParaIA = `A seguinte avaliação foi recebida do cliente "${avaliacao.nomeCliente || 'Desconhecido'}" ` +
                              `referente à atividade "${avaliacao.nomeAtividade || 'Portal/Geral'}" (Tipo: ${avaliacao.tipoAvaliacao}):\n\n` +
                              `"${avaliacao.textoAvaliacao}"\n\n` +

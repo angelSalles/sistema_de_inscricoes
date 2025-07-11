@@ -1,8 +1,7 @@
 // front-end-inscricoes/src/pages/ClientInscricoes.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { ChangeEvent } from 'react';
 import type { Atividade, Cliente, Inscricao } from '../types/index.d';
-import { Link as ReactRouterLink } from 'react-router-dom';
 
 function ClientInscricoes() {
   const [atividadesDisponiveis, setAtividadesDisponiveis] = useState<Atividade[]>([]);
@@ -17,7 +16,7 @@ function ClientInscricoes() {
   const [errorAtividades, setErrorAtividades] = useState<string | null>(null);
   const [errorClientes, setErrorClientes] = useState<string | null>(null);
   const [errorInscricoes, setErrorInscricoes] = useState<string | null>(null);
-  const [message, setMessage] = useState<{ type: 'success' | 'error' | 'warning', text: string } | null>(null);
+  const [message] = useState<{ type: 'success' | 'error' | 'warning', text: string } | null>(null);
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 

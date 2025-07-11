@@ -1,10 +1,7 @@
 // front-end-inscricoes/src/pages/AdminListarClientes.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { Cliente, ClienteFormData } from '../types/index.d'; // Importar Cliente e ClienteFormData
 import type { ChangeEvent, FormEvent } from 'react';
-
-// ReactRouterLink não é necessário aqui, a menos que você queira adicionar um link de "voltar" no formulário de edição
-// import { Link as ReactRouterLink } from 'react-router-dom';
 
 function AdminListarClientes() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
@@ -108,7 +105,6 @@ function AdminListarClientes() {
       bairro: cliente.bairro,
       cidade: cliente.cidade,
       estado: cliente.estado,
-      // Não inclui CEP na edição direta aqui, pois ele é geralmente imutável após o cadastro
     });
     setMessage(null); // Limpa mensagens anteriores
   };
@@ -191,8 +187,6 @@ function AdminListarClientes() {
                 />
               </div>
 
-              {/* Não incluímos o CEP e seus campos relacionados aqui, pois o CEP é normalmente imutável após o cadastro.
-                  O logradouro, bairro, cidade, estado são campos de endereço diretos. */}
               <div className="form-group">
                 <label htmlFor="logradouro" className="form-label">Logradouro</label>
                 <input

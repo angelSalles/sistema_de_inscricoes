@@ -1,5 +1,5 @@
 // front-end-inscricoes/src/pages/AdminGerenciarInscricoes.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { ChangeEvent } from 'react';
 import type { Atividade, Cliente, Inscricao } from '../types/index.d';
 // Link as ReactRouterLink não é necessário aqui para esta página
@@ -82,7 +82,6 @@ function AdminGerenciarInscricoes() {
       });
 
       setTodasInscricoes(inscricoesComDetalhes);
-      // setFilteredInscricoes(inscricoesComDetalhes); // A filtragem será aplicada no useEffect abaixo
     } catch (err) {
       console.error('Erro ao buscar todas as inscrições:', err);
       setErrorInscricoes('Não foi possível carregar as inscrições.');

@@ -1,6 +1,3 @@
-// front-end-inscricoes/src/pages/AdminPerfis.tsx
-import React from 'react';
-
 function AdminPerfis() {
   return (
     <div className="card-container">

@@ -1,8 +1,7 @@
 // front-end-inscricoes/src/pages/ClientCadastro.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import type { ClienteFormData, ViaCepResponse, Atividade } from '../types/index.d';
-import { Link as ReactRouterLink } from 'react-router-dom';
 
 function ClientCadastro() {
   const [formData, setFormData] = useState<ClienteFormData>({
@@ -22,7 +21,6 @@ function ClientCadastro() {
   const [isLoadingAtividades, setIsLoadingAtividades] = useState<boolean>(true);
   const [isLoadingSave, setIsLoadingSave] = useState<boolean>(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'warning', text: string } | null>(null);
-  const [isCadastroSuccessful, setIsCadastroSuccessful] = useState<boolean>(false); // <--- ADICIONE/CONFIRME ESTA LINHA
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -122,7 +120,6 @@ const handleSubmit = async (e: FormEvent) => {
 
   setIsLoadingSave(true);
   setMessage(null);
-  setIsCadastroSuccessful(false);
 
   if (!selectedAtividadeId) {
     setMessage({ type: 'error', text: 'Por favor, selecione uma atividade para inscrição.' });
@@ -180,7 +177,6 @@ const handleSubmit = async (e: FormEvent) => {
 
     // Se ambos foram bem-sucedidos
     setMessage({ type: 'success', text: `Cliente e inscrição cadastrados com sucesso! ID do Cliente: ${clienteId}, ID da Inscrição: ${inscricaoResult.id}` });
-    setIsCadastroSuccessful(true);
   } catch (error: any) {
     console.error('Erro no processo de cadastro/inscrição:', error);
     // Exibe a mensagem de erro detalhada vinda do backend ou uma genérica

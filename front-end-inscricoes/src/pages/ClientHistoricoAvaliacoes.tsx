@@ -1,15 +1,13 @@
 // front-end-inscricoes/src/pages/ClientHistoricoAvaliacoes.tsx
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import type { Avaliacao, Cliente, Atividade } from '../types/index.d';
 
 function ClientHistoricoAvaliacoes() {
   const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
-  const [clientes, setClientes] = useState<Cliente[]>([]);
-  const [atividades, setAtividades] = useState<Atividade[]>([]);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<{ type: 'success' | 'error' | 'warning', text: string } | null>(null); 
+  const [message] = useState<{ type: 'success' | 'error' | 'warning', text: string } | null>(null); 
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -32,8 +30,7 @@ function ClientHistoricoAvaliacoes() {
       const atividadesData: Atividade[] = await atividadesRes.json();
       const avaliacoesData: Avaliacao[] = await avaliacoesRes.json();
 
-      setClientes(clientesData);
-      setAtividades(atividadesData);
+      
 
       // Realiza o "join" no frontend para adicionar nomes de cliente e atividade às avaliações
       const avaliacoesComDetalhes = avaliacoesData.map(avaliacao => {

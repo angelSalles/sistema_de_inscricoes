@@ -1,13 +1,10 @@
-// front-end-inscricoes/src/layouts/ClientLayout.tsx
-import React from 'react';
-import { Outlet, Link as ReactRouterLink, Routes, Route } from 'react-router-dom';
+import { Link as ReactRouterLink, Routes, Route } from 'react-router-dom';
 import '../App.css';
 
-// Importar páginas da área do cliente
 import ClientCadastro from '../pages/ClientCadastro';
 import ClientInscricoes from '../pages/ClientInscricoes';
-import ClientAvaliacoes from '../pages/ClientAvaliacoes'; // Página do formulário de envio
-import ClientHistoricoAvaliacoes from '../pages/ClientHistoricoAvaliacoes'; // <--- Importe este componente
+import ClientAvaliacoes from '../pages/ClientAvaliacoes'; 
+import ClientHistoricoAvaliacoes from '../pages/ClientHistoricoAvaliacoes'; 
 
 function ClientLayout() {
   return (
@@ -28,11 +25,10 @@ function ClientLayout() {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<p>Bem-vindo à Área do Cliente! Por favor, selecione uma opção no menu acima.</p>} />
-          {/* Rotas aninhadas para a área do cliente */}
           <Route path="cadastro" element={<ClientCadastro />} />
           <Route path="inscricoes" element={<ClientInscricoes />} />
-          <Route path="avaliacoes" element={<ClientAvaliacoes />} /> {/* Rota para o formulário */}
-          <Route path="historico-avaliacoes" element={<ClientHistoricoAvaliacoes />} /> {/* <--- Rota para o histórico */}
+          <Route path="avaliacoes" element={<ClientAvaliacoes />} /> 
+          <Route path="historico-avaliacoes" element={<ClientHistoricoAvaliacoes />} /> 
         </Routes>
       </main>
 
