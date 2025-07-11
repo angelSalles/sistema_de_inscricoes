@@ -144,6 +144,7 @@ Embora o Docker instale as dependências para a build, é útil ter as dependên
 
 ### Área Administrativa
 
+* **Acesso:** Crie no Firebase as credenciais de acesso do perfil admin, ou entre diretamente em http://localhost/admin/perfis-administrativos para criar seu perfil, com os seguintes campos: dataCriacao 11 de julho de 2025 às 08:26:30 UTC-4 (timestamp); email "admin@sesc.com" (string); nomePerfil "Admin" (string); senha "1234" (string)
 * **Gerenciamento de Clientes:** CRUD completo (visualizar, editar, excluir) de todos os clientes cadastrados.
 * **Gerenciamento de Atividades:** CRUD completo (visualizar, cadastrar, editar, excluir) das atividades oferecidas.
 * **Gerenciamento de Responsáveis:** CRUD completo (visualizar, cadastrar, editar, excluir) dos responsáveis pelas atividades.

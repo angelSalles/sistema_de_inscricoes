@@ -57,15 +57,6 @@ function AdminPerfis() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlePermissoesChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const rawPermissoes = e.target.value;
-    const permissoesArray = rawPermissoes
-      .split(",")
-      .map((p) => p.trim())
-      .filter((p) => p !== "");
-    setFormData((prev) => ({ ...prev, permissoes: permissoesArray }));
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoadingForm(true);
