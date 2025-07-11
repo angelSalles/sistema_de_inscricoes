@@ -34,91 +34,109 @@ O projeto é organizado em duas pastas principais na raiz do repositório:
 * `back-end-inscricoes/`: Contém o código do servidor Node.js (API REST).
 * `front-end-inscricoes/`: Contém o código da aplicação React (interface do usuário).
 
-## 🛠️ Configuração do Ambiente
+## 🐳 Configuração e Execução com Docker Compose
 
-Certifique-se de ter o [Node.js](https://nodejs.org/en/) (versão LTS recomendada) e o npm (que vem com o Node.js) instalados em sua máquina.
+A forma recomendada de configurar e executar esta aplicação é utilizando o Docker Compose, que orquestrará tanto o backend quanto o frontend em contêineres Docker isolados.
+
+### Pré-requisitos
+
+* **Docker Desktop**: Certifique-se de ter o [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado e rodando em sua máquina (Windows, macOS ou Linux).
+    * No Windows, ative a **Integração WSL 2** nas configurações do Docker Desktop para que você possa executar comandos `docker` e `docker compose` diretamente do seu terminal WSL.
 
 ### 1. Configuração do Projeto Firebase
 
 1.  Acesse o [Console do Firebase](https://console.firebase.google.com/).
-2.  Clique em "Adicionar projeto" ou "Criar um projeto" e siga as instruções.
-3.  Após criar o projeto, no menu lateral esquerdo, vá em **Build > Firestore Database** e clique em "Criar banco de dados". Para desenvolvimento, selecione "Iniciar no modo de teste". Escolha a localização mais próxima de você.
+2.  Crie um novo projeto Firebase.
+3.  No menu lateral esquerdo, vá em **Build > Firestore Database** e clique em "Criar banco de dados". Para desenvolvimento, selecione "Iniciar no modo de teste". Escolha a localização mais próxima de você.
 4.  No menu lateral esquerdo, vá em **Configurações do Projeto (ícone de engrenagem) > Contas de Serviço**.
 5.  Clique em **"Gerar nova chave privada"** e confirme em "Gerar chave". Um arquivo JSON será baixado para o seu computador.
     **Mova este arquivo JSON para a pasta `back-end-inscricoes/` do seu projeto.**
     É recomendável renomeá-lo para algo mais simples, como `firebase-adminsdk.json` ou `serviceAccountKey.json`.
-    **Mantenha este arquivo SEGURO e NUNCA o exponha em repositórios públicos (ele já é ignorado pelo `.gitignore` global).**
+    **Mantenha este arquivo SEGURO e NUNCA o exponha em repositórios públicos.**
 
-### 2. Configuração do Backend
+### 2. Configuração de Variáveis de Ambiente
 
-1.  Navegue até a pasta `back-end-inscricoes` no seu terminal:
-    ```bash
-    cd back-end-inscricoes
-    ```
-2.  Crie um arquivo de variáveis de ambiente chamado `.env` na pasta `back-end-inscricoes/` (se ainda não existir).
-3.  Adicione as seguintes variáveis ao arquivo `.env`, substituindo `[NOME_DO_SEU_ARQUIVO_DE_CHAVE].json` pelo nome real do arquivo JSON que você baixou do Firebase e moveu para esta pasta:
+#### 2.1. Backend (`back-end-inscricoes/.env`)
+
+1.  Navegue até a pasta `back-end-inscricoes/`.
+2.  Crie um arquivo `.env` (se ainda não existir).
+3.  Adicione as seguintes variáveis, substituindo os placeholders pelos seus valores reais:
     ```dotenv
     # back-end-inscricoes/.env
-    # Caminho para sua chave de serviço Firebase.
-    # Use barras / no caminho, mesmo no Windows.
-    # Exemplo (WSL/Linux): FIREBASE_SERVICE_ACCOUNT_PATH=/mnt/c/projetos/sesc/sistema_de_inscricoes/back-end-inscricoes/firebase-adminsdk.json
-    # (Se o arquivo estiver na mesma pasta que o .env e server.js, use './nome-do-arquivo.json')
-    FIREBASE_SERVICE_ACCOUNT_PATH=./[NOME_DO_SEU_ARQUIVO_DE_CHAVE].json
+    # Caminho para sua chave de serviço Firebase DENTRO DO CONTÊINER DOCKER.
+    # O volume mapeia o arquivo do HOST para /app/nome_do_arquivo.json no contêiner.
+    FIREBASE_SERVICE_ACCOUNT_PATH=/app/[NOME_DO_SEU_ARQUIVO_DE_CHAVE].json 
 
     # Token para a API da OpenAI (ChatGPT/Gemini)
     # Obtenha em [https://platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys)
     TOKEN_OPENAI=sua_chave_de_api_da_openai_aqui
     ```
-    **Lembre-se de substituir `sua_chave_de_api_da_openai_aqui` pelo seu token real.**
-4.  Instale as dependências do backend:
-    ```bash
-    npm install
-    ```
+    **Substitua `[NOME_DO_SEU_ARQUIVO_DE_CHAVE].json` pelo nome exato do arquivo JSON.**
 
-### 3. Configuração do Frontend
+#### 2.2. Frontend (`front-end-inscricoes/.env`)
 
-1.  **Copie seu logo (`logo-sesc.jpeg`)** (ou qualquer imagem que deseje usar como logo) para a pasta `front-end-inscricoes/src/assets/`.
-2.  Navegue até a pasta `front-end-inscricoes` no seu terminal (em uma nova janela ou aba, para que o backend possa continuar rodando):
-    ```bash
-    cd front-end-inscricoes
-    ```
-3.  Crie um arquivo de variáveis de ambiente chamado `.env` na pasta `front-end-inscricoes/` (se ainda não existir).
-4.  Adicione a URL base do seu servidor backend a este arquivo:
+1.  Navegue até a pasta `front-end-inscricoes/`.
+2.  Crie um arquivo `.env` (se ainda não existir).
+3.  Adicione a URL base do seu servidor backend. Como ambos os serviços estarão no Docker e você os acessará via `localhost`, a URL é a mesma porta mapeada:
     ```dotenv
     # front-end-inscricoes/.env
+    # URL do backend acessível pelo navegador do seu host
     VITE_API_BASE_URL=http://localhost:3001
     ```
-5.  Instale as dependências do frontend:
+
+### 3. Instalação de Dependências (Localmente - apenas para inicialização e IDE)
+
+Embora o Docker instale as dependências para a build, é útil ter as dependências instaladas localmente para ferramentas de desenvolvimento (linters, IntelliSense do VS Code).
+
+1.  **Para o Backend:**
     ```bash
+    cd back-end-inscricoes
+    npm install
+    ```
+2.  **Para o Frontend:**
+    ```bash
+    cd front-end-inscricoes
     npm install
     ```
 
-## 🚀 Como Executar a Aplicação
+## 🚀 Como Executar a Aplicação com Docker Compose
 
-Siga estes passos para iniciar o backend e o frontend:
-
-1.  **Iniciar o Backend:**
-    Abra seu terminal, navegue até `back-end-inscricoes/` e execute:
+1.  **Navegue até a pasta raiz do projeto** (`sistema_de_inscricoes/`):
     ```bash
-    npm start
+    cd /mnt/c/projetos/sesc/sistema_de_inscricoes # Ou o caminho equivalente no seu sistema
     ```
-    Você deverá ver a mensagem `Servidor backend rodando em http://localhost:3001`.
 
-2.  **Iniciar o Frontend:**
-    Abra **OUTRO** terminal (mantenha o backend rodando no primeiro), navegue até `front-end-inscricoes/` e execute:
+2.  **Construir as Imagens Docker:**
+    Execute este comando para construir as imagens do backend e do frontend. Faça isso sempre que houver mudanças nos `Dockerfiles` ou nas dependências dos `package.json`.
     ```bash
-    npm run dev
+    docker compose build
     ```
-    O Vite iniciará o servidor de desenvolvimento e indicará um endereço, geralmente `http://localhost:5173`.
 
-3.  **Acessar a Aplicação:**
-    Abra seu navegador e vá para o endereço indicado pelo Vite (ex: `http://localhost:5173`).
+3.  **Iniciar os Contêineres:**
+    Este comando irá criar e iniciar os contêineres do backend e do frontend, e configurá-los para se comunicar.
+    ```bash
+    docker compose up
+    ```
+    Você verá os logs de ambos os serviços no terminal.
+
+4.  **Acessar a Aplicação:**
+    Abra seu navegador e vá para `http://localhost`.
+    * O frontend estará acessível na porta 80 (padrão HTTP).
+    * O backend estará acessível na porta 3001 (internamente e externamente via `localhost:3001`).
+
+5.  **Parar a Aplicação:**
+    Para parar os contêineres, pressione `Ctrl+C` no terminal onde o `docker compose up` está rodando.
+
+6.  **Parar e Remover Contêineres e Redes (para um início limpo):**
+    ```bash
+    docker compose down
+    ```
 
 ## ✨ Funcionalidades Principais
 
 ### Área do Cliente
 
-* **Página Inicial (Home):** Atua como um portal, direcionando o usuário para a Área Administrativa ou Área do Cliente. Não possui cabeçalho/rodapé.
+* **Página Inicial (Home):** Ponto de entrada que direciona o usuário para a Área Administrativa ou Área do Cliente.
 * **Cadastro de Cliente e Inscrição em Atividade:** Permite que o cliente preencha seus dados pessoais (com busca de endereço por CEP) e se inscreva em uma atividade disponível, tudo em um único formulário.
 * **Minhas Inscrições:** Lista todas as inscrições feitas no sistema, exibindo o cliente, atividade, unidade, data e status. Possui um campo de busca que filtra por qualquer campo visível na tabela.
 * **Registrar Avaliação:** Formulário para o cliente enviar críticas, sugestões ou elogios sobre o portal ou atividades.
@@ -131,18 +149,19 @@ Siga estes passos para iniciar o backend e o frontend:
 * **Gerenciamento de Responsáveis:** CRUD completo (visualizar, cadastrar, editar, excluir) dos responsáveis pelas atividades.
 * **Gerenciamento de Inscrições:** Visualização de todas as inscrições, com filtros (por texto em qualquer campo visível, por status) e a capacidade de atualizar o status da inscrição.
 * **Cadastro de Perfis Administrativos:** Permite cadastrar e gerenciar perfis de acesso para administradores (com e-mail e senha simulados, **não seguro para produção**).
-* **Painel de BI - Dashboards:** Exibe métricas e gráficos de pizza interativos sobre o total de clientes, atividades, e a distribuição de inscrições por status, atividade e unidade.
-* **Gerador de Conteúdo por IA (integrado ao Dashboard):** Permite enviar perguntas à IA (ChatGPT/Gemini) sobre os dados do dashboard, e a IA responde de forma contextualizada.
+* **Painel de BI - Dashboards:** Exibe métricas e gráficos de pizza interativos sobre o total de clientes, atividades, e a distribuição de inscrições por status, atividade e unidade. Inclui uma funcionalidade de IA para obter insights sobre os dados.
 * **Gestão de Avaliações:** Visualização de todas as avaliações enviadas, com a opção de gerar uma resposta automática via IA e salvar essa resposta.
 
-## 🐛 Tratamento de Erros e Casos Extremos
+## 🐛 Tratamento de Erros e Validações
 
 * As requisições para o backend possuem tratamento de erros (`try/catch`) e exibem mensagens claras no frontend.
 * Formulários incluem validações básicas (campos obrigatórios).
-* Listagens exibem mensagens quando os dados estão carregando, quando há erros ou quando não há registros.
+* Listagens exibem mensagens claras quando os dados estão carregando, quando há erros ou quando não há registros.
 * Validação de unicidade para inscrições (um cliente não pode se inscrever duas vezes na mesma atividade).
+* As respostas da API são padronizadas em formato JSON.
 
 ## ⚠️ Observações de Segurança (Importante para Produção)
 
-* **Senhas de Perfis Administrativos:** Atualmente, as senhas de perfis administrativos são salvas em texto puro no Cloud Firestore para fins de demonstração do desafio. **Em um ambiente de produção real, NUNCA faça isso.** Você deve usar o Firebase Authentication ou um sistema de autenticação robusto que inclua hashing de senhas.
+* **Senhas de Perfis Administrativos:** Atualmente, as senhas de perfis administrativos são salvas em texto puro no Cloud Firestore para fins de demonstração do desafio. **Em um ambiente de produção real, NUNCA faça isso.** Você deve usar o Firebase Authentication ou um sistema de autenticação robusto que inclua hashing de senhas e autenticação (e.g., JWT).
 * **Regras de Segurança do Firestore:** Para produção, as regras de segurança do seu Cloud Firestore devem ser configuradas para restringir o acesso direto do cliente e garantir que apenas o backend (com Firebase Admin SDK) ou usuários autenticados com regras específicas possam ler/escrever dados.
+* **Token da OpenAI:** O `TOKEN_OPENAI` é uma chave sensível. Garanta que seu `.env` esteja no `.gitignore` e que a chave não seja exposta em repositórios públicos ou builds de cliente.
