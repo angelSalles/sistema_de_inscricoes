@@ -71,7 +71,7 @@ module.exports = (db) => {
       delete dadosAtualizados.dataCriacao;
 
       await db.collection('CLIENTE').doc(clienteId).update(dadosAtualizados);
-      res.status(200).send('Cliente atualizado com sucesso.');
+      res.status(200).json({ message: 'Cliente atualizado com sucesso.', id: clienteId });
     } catch (error) {
       console.error('Erro ao atualizar cliente:', error);
       res.status(500).send('Erro ao atualizar cliente.');

@@ -1,7 +1,8 @@
 // front-end-inscricoes/src/pages/ClientCadastro.tsx
-import React, { useState, useEffect } from 'react'; // Adicionar useEffect
+import React, { useState, useEffect } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
-import type { ClienteFormData, ViaCepResponse, Atividade } from '../types/index.d'; // Importar Atividade
+import type { ClienteFormData, ViaCepResponse, Atividade } from '../types/index.d';
+import { Link as ReactRouterLink } from 'react-router-dom';
 
 function ClientCadastro() {
   const [formData, setFormData] = useState<ClienteFormData>({
@@ -14,13 +15,14 @@ function ClientCadastro() {
     cidade: '',
     estado: '',
   });
-  const [atividadesDisponiveis, setAtividadesDisponiveis] = useState<Atividade[]>([]); // Novo estado para atividades
-  const [selectedAtividadeId, setSelectedAtividadeId] = useState<string>(''); // Novo estado para atividade selecionada
+  const [atividadesDisponiveis, setAtividadesDisponiveis] = useState<Atividade[]>([]);
+  const [selectedAtividadeId, setSelectedAtividadeId] = useState<string>('');
 
   const [isLoadingCep, setIsLoadingCep] = useState<boolean>(false);
-  const [isLoadingAtividades, setIsLoadingAtividades] = useState<boolean>(true); // Novo estado para carregamento de atividades
+  const [isLoadingAtividades, setIsLoadingAtividades] = useState<boolean>(true);
   const [isLoadingSave, setIsLoadingSave] = useState<boolean>(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'warning', text: string } | null>(null);
+  const [isCadastroSuccessful, setIsCadastroSuccessful] = useState<boolean>(false); // <--- ADICIONE/CONFIRME ESTA LINHA
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -115,78 +117,78 @@ function ClientCadastro() {
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: FormEvent) => {
+  e.preventDefault();
 
-    setIsLoadingSave(true);
-    setMessage(null);
+  setIsLoadingSave(true);
+  setMessage(null);
+  setIsCadastroSuccessful(false);
 
-    if (!selectedAtividadeId) {
-      setMessage({ type: 'error', text: 'Por favor, selecione uma atividade para inscrição.' });
-      setIsLoadingSave(false);
-      return;
+  if (!selectedAtividadeId) {
+    setMessage({ type: 'error', text: 'Por favor, selecione uma atividade para inscrição.' });
+    setIsLoadingSave(false);
+    return;
+  }
+
+  let clienteId: string | null = null;
+
+  try {
+    // 1. Cadastrar o Cliente
+    const clienteResponse = await fetch(`${apiBaseUrl}/clientes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const clienteResult = await clienteResponse.json();
+
+    if (!clienteResponse.ok) {
+      throw new Error(clienteResult.error || 'Ocorreu um erro ao cadastrar o cliente. (Erro no Cliente)');
     }
+    clienteId = clienteResult.id;
 
-    let clienteId: string | null = null;
+    // 2. Realizar a Inscrição na Atividade
+    const inscricaoResponse = await fetch(`${apiBaseUrl}/inscricoes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        idCliente: clienteId,
+        idAtividade: selectedAtividadeId,
+      }),
+    });
 
-    try {
-      // 1. Cadastrar o Cliente
-      const clienteResponse = await fetch(`${apiBaseUrl}/clientes`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const clienteResult = await clienteResponse.json();
-
-      if (!clienteResponse.ok) {
-        throw new Error(clienteResult.error || 'Ocorreu um erro ao cadastrar o cliente.');
+    // --- NOVO: Tratamento de erro mais específico para a inscrição ---
+    if (!inscricaoResponse.ok) {
+      const inscricaoErrorData = await inscricaoResponse.text(); // Lê como texto para capturar mensagens de erro simples
+      // Tenta fazer parse como JSON se for um JSON, caso contrário usa o texto
+      let errorMessage = inscricaoErrorData;
+      try {
+        const parsedError = JSON.parse(inscricaoErrorData);
+        errorMessage = parsedError.error || parsedError.message || inscricaoErrorData;
+      } catch (jsonError) {
+        // Não é um JSON, usa o texto puro
       }
-      clienteId = clienteResult.id; // Obter o ID do cliente recém-criado
-
-      // 2. Realizar a Inscrição na Atividade (usando o ID do cliente recém-criado)
-      const inscricaoResponse = await fetch(`${apiBaseUrl}/inscricoes`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          idCliente: clienteId,
-          idAtividade: selectedAtividadeId,
-        }),
-      });
-
-      const inscricaoResult = await inscricaoResponse.json();
-
-      if (!inscricaoResponse.ok) {
-        throw new Error(inscricaoResult.error || 'Ocorreu um erro ao realizar a inscrição.');
-      }
-
-      // Se ambos foram bem-sucedidos
-      setMessage({ type: 'success', text: `Cliente e inscrição cadastrados com sucesso! ID do Cliente: ${clienteId}, ID da Inscrição: ${inscricaoResult.id}` });
-      // Limpa o formulário após o sucesso
-      setFormData({
-        nomeCliente: '',
-        dataNascimento: '',
-        cep: '',
-        logradouro: '',
-        numero: '',
-        bairro: '',
-        cidade: '',
-        estado: '',
-      });
-      setSelectedAtividadeId(atividadesDisponiveis.length > 0 ? atividadesDisponiveis[0].id : ''); // Reseta para a primeira ou vazio
-    } catch (error: any) {
-      console.error('Erro no processo de cadastro/inscrição:', error);
-      setMessage({ type: 'error', text: error.message || 'Erro de rede ou no servidor durante o cadastro e inscrição.' });
-      // Opcional: Se a inscrição falhar mas o cliente foi criado, você pode lidar com isso.
-      // Por enquanto, consideramos falha total se qualquer parte falhar.
-    } finally {
-      setIsLoadingSave(false);
+      throw new Error(errorMessage || `Ocorreu um erro ao realizar a inscrição. Status: ${inscricaoResponse.status}`);
     }
-  };
+    // --- FIM DO NOVO TRATAMENTO ---
+
+    const inscricaoResult = await inscricaoResponse.json(); // Só faz o parse se for OK
+
+    // Se ambos foram bem-sucedidos
+    setMessage({ type: 'success', text: `Cliente e inscrição cadastrados com sucesso! ID do Cliente: ${clienteId}, ID da Inscrição: ${inscricaoResult.id}` });
+    setIsCadastroSuccessful(true);
+  } catch (error: any) {
+    console.error('Erro no processo de cadastro/inscrição:', error);
+    // Exibe a mensagem de erro detalhada vinda do backend ou uma genérica
+    setMessage({ type: 'error', text: error.message || 'Erro de rede ou no servidor durante o cadastro e inscrição.' });
+  } finally {
+    setIsLoadingSave(false);
+  }
+};
 
   return (
     <div className="card-container" style={{ maxWidth: '600px', margin: 'auto', marginTop: '32px' }}>

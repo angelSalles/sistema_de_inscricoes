@@ -1,18 +1,16 @@
 // front-end-inscricoes/src/layouts/AdminLayout.tsx
 import React from 'react';
-import { Outlet, Link as ReactRouterLink, Routes, Route } from 'react-router-dom'; // Importe Routes e Route
+import { Outlet, Link as ReactRouterLink, Routes, Route } from 'react-router-dom';
 import '../App.css';
 
-// Importar páginas que existirão na área administrativa
-import Clientes from '../pages/AdminListarClientes'; // Gerenciamento de Inscrições é similar a clientes/atividades
-import Atividades from '../pages/AdminAtividades';
-import Responsaveis from '../pages/AdminResponsaveis';
-
-// Novas páginas placeholder para a área administrativa
-import AdminPerfis from '../pages/AdminPerfis'; // Cadastro de Perfis Administrativos
-import AdminGerenciarInscricoes from '../pages/AdminGerenciarInscricoes'; // Gerenciamento de Inscrições (pode ser o mesmo que Clientes.tsx inicialmente)
-import AdminDashboards from '../pages/AdminDashboards'; // Painéis de BI
-import AdminAvaliacoes from '../pages/AdminAvaliacoes'; // Gestão das Avaliações
+// Importar páginas administrativas
+import AdminAtividades from '../pages/AdminAtividades';
+import AdminAvaliacoes from '../pages/AdminAvaliacoes'; // <--- Importe este componente
+import AdminDashboards from '../pages/AdminDashboards';
+import AdminGerenciarInscricoes from '../pages/AdminGerenciarInscricoes';
+import AdminListarClientes from '../pages/AdminListarClientes';
+import AdminPerfis from '../pages/AdminPerfis';
+import AdminResponsaveis from '../pages/AdminResponsaveis';
 
 function AdminLayout() {
   return (
@@ -22,27 +20,28 @@ function AdminLayout() {
           <ReactRouterLink to="/admin">Admin SESC</ReactRouterLink>
         </h1>
         <div className="navbar-links">
+          <ReactRouterLink to="/admin/listar-clientes" className="nav-link">Clientes</ReactRouterLink>
           <ReactRouterLink to="/admin/atividades" className="nav-link">Atividades</ReactRouterLink>
           <ReactRouterLink to="/admin/responsaveis" className="nav-link">Responsáveis</ReactRouterLink>
           <ReactRouterLink to="/admin/perfis-administrativos" className="nav-link">Perfis Admin</ReactRouterLink>
           <ReactRouterLink to="/admin/gerenciar-inscricoes" className="nav-link">Gerenciar Inscrições</ReactRouterLink>
           <ReactRouterLink to="/admin/dashboards" className="nav-link">Dashboards (BI)</ReactRouterLink>
-          <ReactRouterLink to="/admin/avaliacoes" className="nav-link">Avaliações</ReactRouterLink>
+          <ReactRouterLink to="/admin/avaliacoes" className="nav-link">Avaliações</ReactRouterLink> {/* <--- Link para Avaliações */}
           <ReactRouterLink to="/" className="nav-link">Sair</ReactRouterLink>
         </div>
       </nav>
 
       <main className="main-content">
         <Routes>
+          <Route path="/" element={<p>Bem-vindo à Área Administrativa! Por favor, selecione uma opção no menu acima.</p>} />
           {/* Rotas aninhadas para a área administrativa */}
-          <Route path="/" element={<p>Bem-vindo à Área Administrativa!</p>} /> {/* Rota padrão para /admin */}
-          <Route path="atividades" element={<Atividades />} />
-          <Route path="responsaveis" element={<Responsaveis />} />
+          <Route path="listar-clientes" element={<AdminListarClientes />} />
+          <Route path="atividades" element={<AdminAtividades />} />
+          <Route path="responsaveis" element={<AdminResponsaveis />} />
           <Route path="perfis-administrativos" element={<AdminPerfis />} />
           <Route path="gerenciar-inscricoes" element={<AdminGerenciarInscricoes />} />
           <Route path="dashboards" element={<AdminDashboards />} />
-          <Route path="avaliacoes" element={<AdminAvaliacoes />} />
-          {/* ... outras rotas admin como edição/detalhes */}
+          <Route path="avaliacoes" element={<AdminAvaliacoes />} /> 
         </Routes>
       </main>
 

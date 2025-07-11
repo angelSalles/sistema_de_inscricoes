@@ -30,7 +30,7 @@ function Home() {
         </ReactRouterLink>
 
         {/* Link para a Área do Cliente */}
-        <ReactRouterLink to="/cliente/cadastro" className="home-button secondary"> {/* Exemplo: Direciona para o cadastro do cliente */}
+        <ReactRouterLink to="/cliente" className="home-button secondary"> {/* Exemplo: Direciona para o cadastro do cliente */}
           Área do Cliente
         </ReactRouterLink>
       </div>
